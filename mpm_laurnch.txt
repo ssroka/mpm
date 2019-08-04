@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# for inputFileNum in {41..44}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# 
+# for inputFileNum in {50..54}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# 
+# 
+# for inputFileNum in {60..64}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# for inputFileNum in {70..74}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+
+
+# for inputFileNum in {101..106}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# for inputFileNum in {111..116}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# for inputFileNum in {121..126}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# for inputFileNum in {131..136}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+# 
+# for inputFileNum in {141..146}
+# do
+#         sbatch mpm.slurm $inputFileNum
+# 	sleep 2
+# done
+
+for inputFileNum in {151..156}
+do
+        sbatch mpm.slurm $inputFileNum
+	sleep 2
+done
+
+for inputFileNum in {161..166}
+do
+        sbatch mpm.slurm $inputFileNum
+	sleep 2
+done

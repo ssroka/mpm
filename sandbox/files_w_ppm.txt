@@ -1,0 +1,43 @@
+X NayarFxns/SW_BPE.m
+X NayarFxns/SW_ChemPot_s.m
+X NayarFxns/SW_ChemPot_w.m
+X NayarFxns/SW_Conductivity.m
+X NayarFxns/SW_ConductivityP.m
+X NayarFxns/SW_Density.m
+X NayarFxns/SW_Density_Dt.m
+X NayarFxns/SW_Diffusivity.m
+0 NayarFxns/SW_Enthalpy.m
+0 NayarFxns/SW_Entropy.m
+0 NayarFxns/SW_FlowExergy.m
+0 NayarFxns/SW_Gibbs.m
+0 NayarFxns/SW_IntEnergy.m
+0 NayarFxns/SW_IsobExp.m
+0 NayarFxns/SW_IsothComp.m
+0 NayarFxns/SW_Kviscosity.m
+X NayarFxns/SW_LatentHeat.m
+0 NayarFxns/SW_OsmCoeff.m
+0 NayarFxns/SW_OsmPress.m
+0 NayarFxns/SW_Prandtl.m
+X NayarFxns/SW_Psat.m
+0 NayarFxns/SW_SChemPot_s.m
+X NayarFxns/SW_SpcHeat.m
+X NayarFxns/SW_SurfaceTension.m
+X NayarFxns/SW_SurfaceTension_Dt.m
+X NayarFxns/SW_Viscosity.m
+0 NayarFxns/SW_Volume.m
+**   inputFiles/Exp2_in.m
+**   mm_vars/L_v.m
+X mm_vars/SW_Density_ds.m
+**   mm_vars/c_ps.m
+**   mm_vars/rho_w.m
+**   mm_vars/y.m
+**   study_indep_vars/study_indep_vars_real_data.m
+**   util/compute_initial_drop_conditions.m
+**   util/compute_m_w.m
+**   mm_vars/y.m
+**   mm_vars/rho_s.m
+
+
+X - I checked this file, it was fine to leave it as is
+0 - I didn't check this file because I think I never modified it
+C - changed this files
