@@ -8,4 +8,4 @@
 *.err
 *.out
 */results/*
-
+*logfile.txt
