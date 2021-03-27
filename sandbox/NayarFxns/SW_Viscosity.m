@@ -94,7 +94,8 @@ function mu = SW_Viscosity(T,uT,S,uS)
     end
 
     if ~isequal((S<0)+(S>150),zeros(size(S)))
-        warning('Salinity is out of range for Viscosity function 0<S<150 g/kg');
+        fprintf('\nSalinity is out of range for Viscosity function 0<S<150 g/kg\n');
+%        warning('Salinity is out of range for Viscosity function 0<S<150 g/kg');
     end
 
     %% BEGIN

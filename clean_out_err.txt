@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+rm -f mpm_[0-9]*.err  mpm_[0-9]*.out
+rm -f get_Hk_[0-9]*.err  get_Hk_[0-9]*.out
+
+
+

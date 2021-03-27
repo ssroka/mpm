@@ -15,56 +15,14 @@
 # 
 # 
 # 
-# for inputFileNum in {60..64}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
-# 
-# for inputFileNum in {70..74}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
-
-
 # for inputFileNum in {101..106}
 # do
 #         sbatch mpm.slurm $inputFileNum
 # 	sleep 2
 # done
 # 
-# for inputFileNum in {111..116}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
-# 
-# for inputFileNum in {121..126}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
-# 
-# for inputFileNum in {131..136}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
-# 
-# for inputFileNum in {141..146}
-# do
-#         sbatch mpm.slurm $inputFileNum
-# 	sleep 2
-# done
 
-for inputFileNum in {151..156}
-do
-        sbatch mpm.slurm $inputFileNum
-	sleep 2
-done
-
-for inputFileNum in {161..166}
+for inputFileNum in 201
 do
         sbatch mpm.slurm $inputFileNum
 	sleep 2

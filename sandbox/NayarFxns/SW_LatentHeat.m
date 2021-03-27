@@ -90,7 +90,8 @@ function hfg = SW_LatentHeat(T,uT,S,uS)
     end
 
     if ~isequal((S<0)+(S>240),zeros(size(S)))
-        warning('Salinity is out of range for latent heat function 0<S<240 g/kg');
+        % SGS edit warning('Salinity is out of range for latent heat function 0<S<240 g/kg');
+        fprintf('\nSalinity is out of range for latent heat function 0<S<240 g/kg\n');
     end
 
     %% BEGIN

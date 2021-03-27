@@ -1,0 +1,1022 @@
+diff --git a/.gitignore b/.gitignore
+index 25fce1d..334c6c7 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,3 +5,5 @@
+ *.pdf
+ *.png
+ *.fig
++*.err
++*.out
+diff --git a/clean_out_err.txt b/clean_out_err.txt
+new file mode 100755
+index 0000000..d8c2cd7
+--- /dev/null
++++ b/clean_out_err.txt
+@@ -0,0 +1,7 @@
++#!/bin/bash
++
++
++rm -f mpm_[0-9]*.err  mpm_[0-9]*.out
++
++
++
+diff --git a/dropletEvolution_driver.txt b/dropletEvolution_driver.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/mpm_laurnch.txt b/mpm_laurnch.txt
+new file mode 100755
+index 0000000..49c072e
+--- /dev/null
++++ b/mpm_laurnch.txt
+@@ -0,0 +1,33 @@
++#!/bin/bash
++
++
++for inputFileNum in {41..44}
++do
++        sbatch mpm.slurm $inputFileNum
++	sleep 2
++done
++
++for inputFileNum in {50..54}
++do
++        sbatch mpm.slurm $inputFileNum
++	sleep 2
++done
++
++for inputFileNum in {60..64}
++do
++        sbatch mpm.slurm $inputFileNum
++	sleep 2
++done
++
++for inputFileNum in {70..74}
++do
++        sbatch mpm.slurm $inputFileNum
++	sleep 2
++done
++
++
++
++
++
++
++
+diff --git a/sandbox/dropletEvolution_T_eq_r_eq_only_driver.m b/sandbox/dropletEvolution_T_eq_r_eq_only_driver.m
+index 8f317dd..972c5fb 100644
+--- a/sandbox/dropletEvolution_T_eq_r_eq_only_driver.m
++++ b/sandbox/dropletEvolution_T_eq_r_eq_only_driver.m
+@@ -2,7 +2,7 @@ function [] = dropletEvolution_T_eq_r_eq_only_driver(slurmJobID)
+ %% User Input
+ 
+ % define initial microphycial constants and parameters
+-inputFile = 'Exp10_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
++inputFile = 'Exp20_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
+ 
+ 
+ %% ----------------------------- Set Parameters from runfile  --------------------------
+diff --git a/sandbox/dropletEvolution_driver.m b/sandbox/dropletEvolution_driver.m
+index 73927f2..8160838 100644
+--- a/sandbox/dropletEvolution_driver.m
++++ b/sandbox/dropletEvolution_driver.m
+@@ -1,9 +1,9 @@
+-function [] = dropletEvolution_driver(slurmJobID,exp_num)
++function [] = dropletEvolution_driver(slurmJobID)
+ %% User Input
+ 
+ % define initial microphycial constants and parameters
+-inputFile = sprintf('Exp%d_in',exp_num); % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
+-fprintf('input file : %s\n',inputFile) 
++inputFile = 'Exp21_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
++
+ 
+ %% ----------------------------- Set Parameters from runfile  --------------------------
+ filetext = fileread(sprintf('inputFiles/%s.m',inputFile));
+diff --git a/sandbox/dropletEvolution_driver_1deg.m b/sandbox/dropletEvolution_driver_1deg.m
+deleted file mode 100644
+index 859747c..0000000
+--- a/sandbox/dropletEvolution_driver_1deg.m
++++ /dev/null
+@@ -1,59 +0,0 @@
+-function [] = dropletEvolution_driver(slurmJobID)
+-%% User Input
+-
+-% define initial microphycial constants and parameters
+-inputFile = 'Exp6_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
+-
+-
+-%% ----------------------------- Set Parameters from runfile  --------------------------
+-filetext = fileread(sprintf('inputFiles/%s.m',inputFile));
+-
+-%  Set Nayar Function Flag 
+-global Nayar_flag ;
+-start_char = strfind(filetext,'Nayar_flag');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-% Set Save Directory 
+-start_char = strfind(filetext,'saveDir');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-%% ----------------------------- Create Entry in Log File --------------------------
+-fid = fopen('logfile.txt','a');
+-fprintf(fid,'-------------------------\n');
+-if nargin==1; fprintf(fid,'Job ID: % 9.0f\n',slurmJobID); end
+-fprintf(fid,'Run Name: %s  \n',saveDir);
+-logStr = {'off','on'};
+-fprintf('Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fprintf(fid,'Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fclose(fid);
+-
+-%% ----------------------------- setup paths --------------------------
+-
+-pwd_tmp = pwd;
+-dirstr = pwd_tmp(1:strfind(pwd,'sandbox')+length('sandbox')-1);
+-d = dir(dirstr);
+-addpath(dirstr)
+-for ii = 1:length(d)
+-    % do not include hidden directories
+-    if ~strcmp(d(ii).name(1),'.') && d(ii).isdir
+-        addpath(sprintf('%s/%s',dirstr,d(ii).name))
+-    end
+-end
+-
+-%% ----------------------------- begin droplet evolution --------------------------
+-dropletEvolution;
+-
+-%% ----------------------------- compute CK-CD --------------------------
+-plot_CK_CD_ratio({sprintf('results/%s',saveDir)});
+-savefig(gcf,sprintf('results/%s/CK_CD_rat_plot.fig',saveDir))
+-print(gcf,sprintf('results/%s/CK_CD_rat_plot',saveDir),'-dpng')
+-
+-%% ----------------------------- email results --------------------------
+-% setpref('Internet','SMTP_Server','imap.exchange.mit.edu')
+-% sendmail('ssroka@mit.edu','Job finished running','Your results are here',...
+-%          sprintf('/Users/ssroka/Documents/MATLAB/ASF/calcCoeff_1drop/sandbox/results/%s/CK_CD_rat_plot.png',saveDir))
+-
+-%% ----------------------------- remove user-added paths --------------------------
+-rm_ASF_paths;
+diff --git a/sandbox/dropletEvolution_driver_4deg.m b/sandbox/dropletEvolution_driver_4deg.m
+deleted file mode 100644
+index 6f02870..0000000
+--- a/sandbox/dropletEvolution_driver_4deg.m
++++ /dev/null
+@@ -1,59 +0,0 @@
+-function [] = dropletEvolution_driver(slurmJobID)
+-%% User Input
+-
+-% define initial microphycial constants and parameters
+-inputFile = 'Exp7_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
+-
+-
+-%% ----------------------------- Set Parameters from runfile  --------------------------
+-filetext = fileread(sprintf('inputFiles/%s.m',inputFile));
+-
+-%  Set Nayar Function Flag 
+-global Nayar_flag ;
+-start_char = strfind(filetext,'Nayar_flag');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-% Set Save Directory 
+-start_char = strfind(filetext,'saveDir');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-%% ----------------------------- Create Entry in Log File --------------------------
+-fid = fopen('logfile.txt','a');
+-fprintf(fid,'-------------------------\n');
+-if nargin==1; fprintf(fid,'Job ID: % 9.0f\n',slurmJobID); end
+-fprintf(fid,'Run Name: %s  \n',saveDir);
+-logStr = {'off','on'};
+-fprintf('Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fprintf(fid,'Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fclose(fid);
+-
+-%% ----------------------------- setup paths --------------------------
+-
+-pwd_tmp = pwd;
+-dirstr = pwd_tmp(1:strfind(pwd,'sandbox')+length('sandbox')-1);
+-d = dir(dirstr);
+-addpath(dirstr)
+-for ii = 1:length(d)
+-    % do not include hidden directories
+-    if ~strcmp(d(ii).name(1),'.') && d(ii).isdir
+-        addpath(sprintf('%s/%s',dirstr,d(ii).name))
+-    end
+-end
+-
+-%% ----------------------------- begin droplet evolution --------------------------
+-dropletEvolution;
+-
+-%% ----------------------------- compute CK-CD --------------------------
+-plot_CK_CD_ratio({sprintf('results/%s',saveDir)});
+-savefig(gcf,sprintf('results/%s/CK_CD_rat_plot.fig',saveDir))
+-print(gcf,sprintf('results/%s/CK_CD_rat_plot',saveDir),'-dpng')
+-
+-%% ----------------------------- email results --------------------------
+-% setpref('Internet','SMTP_Server','imap.exchange.mit.edu')
+-% sendmail('ssroka@mit.edu','Job finished running','Your results are here',...
+-%          sprintf('/Users/ssroka/Documents/MATLAB/ASF/calcCoeff_1drop/sandbox/results/%s/CK_CD_rat_plot.png',saveDir))
+-
+-%% ----------------------------- remove user-added paths --------------------------
+-rm_ASF_paths;
+diff --git a/sandbox/dropletEvolution_driver_5deg.m b/sandbox/dropletEvolution_driver_5deg.m
+deleted file mode 100644
+index 6b91889..0000000
+--- a/sandbox/dropletEvolution_driver_5deg.m
++++ /dev/null
+@@ -1,59 +0,0 @@
+-function [] = dropletEvolution_driver(slurmJobID)
+-%% User Input
+-
+-% define initial microphycial constants and parameters
+-inputFile = 'Exp8_in'; % Andreas05_Fig11_in Andreas08_Fig2_in Andreas90_Fig09_in CommitteeMeeting_500micormeterdrop
+-
+-
+-%% ----------------------------- Set Parameters from runfile  --------------------------
+-filetext = fileread(sprintf('inputFiles/%s.m',inputFile));
+-
+-%  Set Nayar Function Flag 
+-global Nayar_flag ;
+-start_char = strfind(filetext,'Nayar_flag');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-% Set Save Directory 
+-start_char = strfind(filetext,'saveDir');
+-last_char = min(strfind(filetext(start_char:start_char+100),sprintf('\n')));
+-eval(filetext(start_char:start_char+last_char))
+-
+-%% ----------------------------- Create Entry in Log File --------------------------
+-fid = fopen('logfile.txt','a');
+-fprintf(fid,'-------------------------\n');
+-if nargin==1; fprintf(fid,'Job ID: % 9.0f\n',slurmJobID); end
+-fprintf(fid,'Run Name: %s  \n',saveDir);
+-logStr = {'off','on'};
+-fprintf('Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fprintf(fid,'Nayar Functions: %s\n',logStr{Nayar_flag + 1});
+-fclose(fid);
+-
+-%% ----------------------------- setup paths --------------------------
+-
+-pwd_tmp = pwd;
+-dirstr = pwd_tmp(1:strfind(pwd,'sandbox')+length('sandbox')-1);
+-d = dir(dirstr);
+-addpath(dirstr)
+-for ii = 1:length(d)
+-    % do not include hidden directories
+-    if ~strcmp(d(ii).name(1),'.') && d(ii).isdir
+-        addpath(sprintf('%s/%s',dirstr,d(ii).name))
+-    end
+-end
+-
+-%% ----------------------------- begin droplet evolution --------------------------
+-dropletEvolution;
+-
+-%% ----------------------------- compute CK-CD --------------------------
+-plot_CK_CD_ratio({sprintf('results/%s',saveDir)});
+-savefig(gcf,sprintf('results/%s/CK_CD_rat_plot.fig',saveDir))
+-print(gcf,sprintf('results/%s/CK_CD_rat_plot',saveDir),'-dpng')
+-
+-%% ----------------------------- email results --------------------------
+-% setpref('Internet','SMTP_Server','imap.exchange.mit.edu')
+-% sendmail('ssroka@mit.edu','Job finished running','Your results are here',...
+-%          sprintf('/Users/ssroka/Documents/MATLAB/ASF/calcCoeff_1drop/sandbox/results/%s/CK_CD_rat_plot.png',saveDir))
+-
+-%% ----------------------------- remove user-added paths --------------------------
+-rm_ASF_paths;
+diff --git a/sandbox/files_using_rho_s.txt b/sandbox/files_using_rho_s.txt
+new file mode 100644
+index 0000000..06be9d8
+--- /dev/null
++++ b/sandbox/files_using_rho_s.txt
+@@ -0,0 +1,20 @@
++X NayarFxns/SW_Density.m
++X NayarFxns/SW_Density_Dt.m
++X NayarFxns/SW_IsobExp.m
++  Q_s/compute_tauf.m
++  approximationEndpoints/compute_req.m
++  approximationEndpoints/compute_tauT.m
++  approximationEndpoints/compute_taur.m
++  dropletAcceleration/integrate_acceleration.m
++  dropletAcceleration/plot_Fig1_Andreas2004.m
++  mm_integration/compute_drdt.m
++  mm_integration/compute_dsdt.m
++  mm_vars/SW_Density_ds.m
++  mm_vars/rho_s.m
++  mm_vars/y.m
++  plotScripts/plot_Q_s.m
++  study_indep_vars/study_indep_vars.m
++  study_indep_vars/study_indep_vars_real_data.m
++  util/compute_initial_drop_conditions.m
++  util/compute_m_w.m
++  util/syms_vars.m
+diff --git a/sandbox/files_w_ppm.txt b/sandbox/files_w_ppm.txt
+new file mode 100644
+index 0000000..4e9beaa
+--- /dev/null
++++ b/sandbox/files_w_ppm.txt
+@@ -0,0 +1,43 @@
++X NayarFxns/SW_BPE.m
++X NayarFxns/SW_ChemPot_s.m
++X NayarFxns/SW_ChemPot_w.m
++X NayarFxns/SW_Conductivity.m
++X NayarFxns/SW_ConductivityP.m
++X NayarFxns/SW_Density.m
++X NayarFxns/SW_Density_Dt.m
++X NayarFxns/SW_Diffusivity.m
++0 NayarFxns/SW_Enthalpy.m
++0 NayarFxns/SW_Entropy.m
++0 NayarFxns/SW_FlowExergy.m
++0 NayarFxns/SW_Gibbs.m
++0 NayarFxns/SW_IntEnergy.m
++0 NayarFxns/SW_IsobExp.m
++0 NayarFxns/SW_IsothComp.m
++0 NayarFxns/SW_Kviscosity.m
++X NayarFxns/SW_LatentHeat.m
++0 NayarFxns/SW_OsmCoeff.m
++0 NayarFxns/SW_OsmPress.m
++0 NayarFxns/SW_Prandtl.m
++X NayarFxns/SW_Psat.m
++0 NayarFxns/SW_SChemPot_s.m
++X NayarFxns/SW_SpcHeat.m
++X NayarFxns/SW_SurfaceTension.m
++X NayarFxns/SW_SurfaceTension_Dt.m
++X NayarFxns/SW_Viscosity.m
++0 NayarFxns/SW_Volume.m
++**   inputFiles/Exp2_in.m
++**   mm_vars/L_v.m
++X mm_vars/SW_Density_ds.m
++**   mm_vars/c_ps.m
++**   mm_vars/rho_w.m
++**   mm_vars/y.m
++**   study_indep_vars/study_indep_vars_real_data.m
++**   util/compute_initial_drop_conditions.m
++**   util/compute_m_w.m
++**   mm_vars/y.m
++**   mm_vars/rho_s.m
++
++
++X - I checked this file, it was fine to leave it as is
++0 - I didn't check this file because I think I never modified it
++C - changed this files
+diff --git a/sandbox/files_w_ppt.txt b/sandbox/files_w_ppt.txt
+new file mode 100644
+index 0000000..a03329c
+--- /dev/null
++++ b/sandbox/files_w_ppt.txt
+@@ -0,0 +1,35 @@
++X NayarFxns/SW_BPE.m
++X NayarFxns/SW_ChemPot_s.m
++X NayarFxns/SW_ChemPot_w.m
++X NayarFxns/SW_Conductivity.m
++X NayarFxns/SW_ConductivityP.m
++X NayarFxns/SW_Density.m
++X NayarFxns/SW_Density_Dt.m
++X NayarFxns/SW_Diffusivity.m
++0 NayarFxns/SW_Enthalpy.m
++0 NayarFxns/SW_Entropy.m
++0 NayarFxns/SW_FlowExergy.m
++0 NayarFxns/SW_Gibbs.m
++0 NayarFxns/SW_IntEnergy.m
++0 NayarFxns/SW_IsobExp.m
++0 NayarFxns/SW_IsothComp.m
++0 NayarFxns/SW_Kviscosity.m
++X NayarFxns/SW_LatentHeat.m
++0 NayarFxns/SW_OsmCoeff.m
++0 NayarFxns/SW_OsmPress.m
++0 NayarFxns/SW_Prandtl.m
++X NayarFxns/SW_Psat.m
++0 NayarFxns/SW_SChemPot_s.m
++X NayarFxns/SW_SpcHeat.m
++X NayarFxns/SW_SurfaceTension.m
++X NayarFxns/SW_SurfaceTension_Dt.m
++X NayarFxns/SW_Viscosity.m
++0 NayarFxns/SW_Volume.m
++X mm_vars/SW_Density_ds.m
++**  mm_vars/rho_s.m
++**  mm_vars/sigma_s.m
++**  util/compute_m_w.m
++
++
++X - I checked this file, it was fine to leave it as is
++0 - I didn't check this file because I think I never modified it
+diff --git a/sandbox/find_ppm_ppt.sh b/sandbox/find_ppm_ppt.sh
+new file mode 100755
+index 0000000..adc5504
+--- /dev/null
++++ b/sandbox/find_ppm_ppt.sh
+@@ -0,0 +1,15 @@
++!/bin/bash
++
++for d in */; do
++	grep -il "ppm" $d*.m >> files_w_ppm.txt
++	grep -il "ppt" $d*.m >> files_w_ppt.txt
++done
++
++for d in */*/; do
++	grep -il "ppm" $d*.m >> files_w_ppm.txt
++	grep -il "ppt" $d*.m >> files_w_ppt.txt
++done
++
++
++
++
+diff --git a/sandbox/inputFiles/Exp5_in.m b/sandbox/inputFiles/Exp5_in.m
+deleted file mode 100644
+index 6616c8c..0000000
+--- a/sandbox/inputFiles/Exp5_in.m
++++ /dev/null
+@@ -1,49 +0,0 @@
+-% Experiment 1
+-
+-% print the error between the calculated microphysical quantity and the
+-% quantity stated in the corresponding publication
+-print_flag = false;
+-
+-saveDir = 'Exp5_100_3';
+-
+-Nayar_flag = true;
+-
+-% SSGF String
+-SSGF_str = 'Ortiz_Suslow_16';
+-
+-RH = 90; % relative humidity
+-    
+-% ambient air temperature
+-T_a = 18; % Celsius
+-
+-% initial droplet temperature (and local SST)
+-T_s_0 = 21; % Celsius
+-
+-% initial salinity of drop 
+-S0 = 34; % ppm
+-
+-% pressure of air 
+-p0 = 100000; % Pa
+-
+-% initial droplet radius
+-r_0_vec = [50]*1e-6;% m 
+-
+-% 10-m wind speed
+-U10 = 36; % m/s
+-
+-% integration time
+-t_final = 2000; % s
+-
+-% Newton-Raphson for r_eq
+-maxIt = 1000; % the maxium number of iterations before aborting the iterative scheme
+-
+-maxEr_req = max(r_0_vec)*0.00001; % the max error in r_eq
+-maxEr_uf  = calcVterm_sphere(max(r_0_vec))*0.0001;  % the max error in u_f
+-maxEr_s   = S0/1000*0.01; % the max error 
+-
+-% micro-physical endpoints from caption in Fig 11 of Andreas 2005
+-% T_eq_exact = 17.07;% deg C
+-% r_eq_exact = 61.44 * 10^-6;% m
+-% tau_T_exact = 0.176;% s
+-% tau_r_exact = 303;% s
+-
+diff --git a/sandbox/inputFiles/Exp6_in.m b/sandbox/inputFiles/Exp6_in.m
+deleted file mode 100644
+index d1909d2..0000000
+--- a/sandbox/inputFiles/Exp6_in.m
++++ /dev/null
+@@ -1,49 +0,0 @@
+-% Experiment 1
+-
+-% print the error between the calculated microphysical quantity and the
+-% quantity stated in the corresponding publication
+-print_flag = false;
+-
+-saveDir = 'Exp6_100_1';
+-
+-Nayar_flag = true;
+-
+-% SSGF String
+-SSGF_str = 'Ortiz_Suslow_16';
+-
+-RH = 90; % relative humidity
+-    
+-% ambient air temperature
+-T_a = 18; % Celsius
+-
+-% initial droplet temperature (and local SST)
+-T_s_0 = 19; % Celsius
+-
+-% initial salinity of drop 
+-S0 = 34; % ppm
+-
+-% pressure of air 
+-p0 = 100000; % Pa
+-
+-% initial droplet radius
+-r_0_vec = [250 200 150 100 50]*1e-6;% m 
+-
+-% 10-m wind speed
+-U10 = 36; % m/s
+-
+-% integration time
+-t_final = 2000; % s
+-
+-% Newton-Raphson for r_eq
+-maxIt = 1000; % the maxium number of iterations before aborting the iterative scheme
+-
+-maxEr_req = max(r_0_vec)*0.00001; % the max error in r_eq
+-maxEr_uf  = calcVterm_sphere(max(r_0_vec))*0.0001;  % the max error in u_f
+-maxEr_s   = S0/1000*0.01; % the max error 
+-
+-% micro-physical endpoints from caption in Fig 11 of Andreas 2005
+-% T_eq_exact = 17.07;% deg C
+-% r_eq_exact = 61.44 * 10^-6;% m
+-% tau_T_exact = 0.176;% s
+-% tau_r_exact = 303;% s
+-
+diff --git a/sandbox/inputFiles/Exp7_in.m b/sandbox/inputFiles/Exp7_in.m
+deleted file mode 100644
+index 3cb6662..0000000
+--- a/sandbox/inputFiles/Exp7_in.m
++++ /dev/null
+@@ -1,49 +0,0 @@
+-% Experiment 1
+-
+-% print the error between the calculated microphysical quantity and the
+-% quantity stated in the corresponding publication
+-print_flag = false;
+-
+-saveDir = 'Exp7_100_4';
+-
+-Nayar_flag = true;
+-
+-% SSGF String
+-SSGF_str = 'Ortiz_Suslow_16';
+-
+-RH = 90; % relative humidity
+-    
+-% ambient air temperature
+-T_a = 18; % Celsius
+-
+-% initial droplet temperature (and local SST)
+-T_s_0 = 22; % Celsius
+-
+-% initial salinity of drop 
+-S0 = 34; % ppm
+-
+-% pressure of air 
+-p0 = 100000; % Pa
+-
+-% initial droplet radius
+-r_0_vec = [200 150 100 50]*1e-6;% m 
+-
+-% 10-m wind speed
+-U10 = 36; % m/s
+-
+-% integration time
+-t_final = 2000; % s
+-
+-% Newton-Raphson for r_eq
+-maxIt = 1000; % the maxium number of iterations before aborting the iterative scheme
+-
+-maxEr_req = max(r_0_vec)*0.00001; % the max error in r_eq
+-maxEr_uf  = calcVterm_sphere(max(r_0_vec))*0.0001;  % the max error in u_f
+-maxEr_s   = S0/1000*0.01; % the max error 
+-
+-% micro-physical endpoints from caption in Fig 11 of Andreas 2005
+-% T_eq_exact = 17.07;% deg C
+-% r_eq_exact = 61.44 * 10^-6;% m
+-% tau_T_exact = 0.176;% s
+-% tau_r_exact = 303;% s
+-
+diff --git a/sandbox/inputFiles/Exp8_in.m b/sandbox/inputFiles/Exp8_in.m
+deleted file mode 100644
+index 092e54d..0000000
+--- a/sandbox/inputFiles/Exp8_in.m
++++ /dev/null
+@@ -1,49 +0,0 @@
+-% Experiment 1
+-
+-% print the error between the calculated microphysical quantity and the
+-% quantity stated in the corresponding publication
+-print_flag = false;
+-
+-saveDir = 'Exp8_100_5';
+-
+-Nayar_flag = true;
+-
+-% SSGF String
+-SSGF_str = 'Ortiz_Suslow_16';
+-
+-RH = 90; % relative humidity
+-    
+-% ambient air temperature
+-T_a = 18; % Celsius
+-
+-% initial droplet temperature (and local SST)
+-T_s_0 = 23; % Celsius
+-
+-% initial salinity of drop 
+-S0 = 34; % ppm
+-
+-% pressure of air 
+-p0 = 100000; % Pa
+-
+-% initial droplet radius
+-r_0_vec = [50]*1e-6;% m 
+-
+-% 10-m wind speed
+-U10 = 36; % m/s
+-
+-% integration time
+-t_final = 2000; % s
+-
+-% Newton-Raphson for r_eq
+-maxIt = 1000; % the maxium number of iterations before aborting the iterative scheme
+-
+-maxEr_req = max(r_0_vec)*0.00001; % the max error in r_eq
+-maxEr_uf  = calcVterm_sphere(max(r_0_vec))*0.0001;  % the max error in u_f
+-maxEr_s   = S0/1000*0.01; % the max error 
+-
+-% micro-physical endpoints from caption in Fig 11 of Andreas 2005
+-% T_eq_exact = 17.07;% deg C
+-% r_eq_exact = 61.44 * 10^-6;% m
+-% tau_T_exact = 0.176;% s
+-% tau_r_exact = 303;% s
+-
+diff --git a/sandbox/logfile.txt b/sandbox/logfile.txt
+new file mode 100644
+index 0000000..9326ea2
+--- /dev/null
++++ b/sandbox/logfile.txt
+@@ -0,0 +1,153 @@
++-------------------------
++Run Name: Exp2_1  
++Nayar Functions: off
++-------------------------
++Run Name: Exp2_1  
++Nayar Functions: off
++-------------------------
++Run Name: Exp1_14  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_14  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_14  
++Nayar Functions: on
++-------------------------
++Run Name: Exp3_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp3_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp3_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp3_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_3  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_3  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_4  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_5  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_5  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_6  
++Nayar Functions: on
++-------------------------
++Run Name: Exp2_2  
++Nayar Functions: off
++-------------------------
++Run Name: Exp2_2  
++Nayar Functions: off
++-------------------------
++Run Name: Exp2_2  
++Nayar Functions: off
++-------------------------
++Run Name: Exp2_2  
++Nayar Functions: off
++-------------------------
++Run Name: Exp1_12  
++Nayar Functions: on
++-------------------------
++Run Name: Exp1_12  
++Nayar Functions: on
++-------------------------
++Run Name: Exp10_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp10_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp10_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp10_1  
++Nayar Functions: on
++-------------------------
++Run Name: Exp10_1  
++Nayar Functions: on
++-------------------------
++Run Name: Test_MPM  
++Nayar Functions: off
++-------------------------
++Run Name: Exp30  
++Nayar Functions: on
++-------------------------
++Run Name: Exp30  
++Nayar Functions: on
++-------------------------
++Run Name: Exp30  
++Nayar Functions: on
++-------------------------
++Run Name: Exp40  
++Nayar Functions: on
++-------------------------
++Run Name: Exp43  
++Nayar Functions: on
++-------------------------
++Run Name: Exp41  
++Nayar Functions: on
++-------------------------
++Run Name: Exp42  
++Nayar Functions: on
++-------------------------
++Run Name: Exp44  
++Nayar Functions: on
++-------------------------
++Run Name: Exp51  
++Nayar Functions: on
++-------------------------
++Run Name: Exp50  
++Nayar Functions: on
++-------------------------
++Run Name: Exp53  
++Nayar Functions: on
++-------------------------
++Run Name: Exp52  
++Nayar Functions: on
++-------------------------
++Run Name: Exp54  
++Nayar Functions: on
++-------------------------
++Run Name: Exp61  
++Nayar Functions: on
++-------------------------
++Run Name: Exp60  
++Nayar Functions: on
++-------------------------
++Run Name: Exp63  
++Nayar Functions: on
++-------------------------
++Run Name: Exp64  
++Nayar Functions: on
++-------------------------
++Run Name: Exp62  
++Nayar Functions: on
++-------------------------
++Run Name: Exp70  
++Nayar Functions: on
++-------------------------
++Run Name: Exp71  
++Nayar Functions: on
++-------------------------
++Run Name: Exp72  
++Nayar Functions: on
++-------------------------
++Run Name: Exp74  
++Nayar Functions: on
++-------------------------
++Run Name: Exp73  
++Nayar Functions: on
+diff --git a/sandbox/mm_integration/compute_dsdt.m b/sandbox/mm_integration/compute_dsdt.m
+index 6113e90..b26ff3b 100644
+--- a/sandbox/mm_integration/compute_dsdt.m
++++ b/sandbox/mm_integration/compute_dsdt.m
+@@ -1,4 +1,3 @@
+-
+ function [dsdt] = compute_dsdt(t,stateVec,RH,m_s,T_a,P_mb,t_final,R,M_w,maxEr_s,maxIt)
+ helpingAnonFxns;
+ P_Pa = mb2Pa(P_mb);
+@@ -67,4 +66,4 @@ dTdt = 3./(rho_s(T_s,r,m_s,s,P_Pa)*c_ps(T_s,s*1000,P_Pa)*r^2)*(k_a_prime(T_s,P_m
+ %    		  		dsdt
+ % -------------------------------------------------------------------
+ 
+-dsdt = [drdt;dTdt];
+\ No newline at end of file
++dsdt = [drdt;dTdt];
+diff --git a/sandbox/mm_integration/progress_fxn.m b/sandbox/mm_integration/progress_fxn.m
+index 05f0fde..0e010c1 100644
+--- a/sandbox/mm_integration/progress_fxn.m
++++ b/sandbox/mm_integration/progress_fxn.m
+@@ -1,27 +1,12 @@
+ % prograss function
+ 
+-
+ function [] = progress_fxn(status)
+-
+-if status > 0.25
+-    load currentStatus.mat
+-    if currentStatus == 0 && status > 0.25 && status < 0.75
++if status > 0.25 && status < 0.255
+         fprintf('\n25 %% of integration complete\n')
+-        currentStatus = 25;
+-        save('currentStatus.mat','currentStatus')
+-    elseif currentStatus == 25 && status > 0.50
++elseif status > 0.5 && status < 0.505
+         fprintf('50 %% of integration complete\n')
+-        currentStatus = 50;
+-        save('currentStatus.mat','currentStatus')
+-    elseif currentStatus == 50 && status > 0.75
++elseif status > 0.75 && status < 0.755
+         fprintf('75 %% of integration complete\n')
+-        currentStatus = 75;
+-        save('currentStatus.mat','currentStatus')
+-    elseif currentStatus == 75 && status > 0.9
+-        currentStatus = 0;
+-        save('currentStatus.mat','currentStatus')
+-    end
+-    
+ end
+ 
+ 
+diff --git a/sandbox/mm_vars_4Gerris.m b/sandbox/mm_vars_4Gerris.m
+deleted file mode 100644
+index 3926b1e..0000000
+--- a/sandbox/mm_vars_4Gerris.m
++++ /dev/null
+@@ -1,152 +0,0 @@
+-clear;clc;close all
+-%% Simulation setup parameters
+-
+-% initial drop temperature in degrees Celsius
+-T_s = 20;
+-
+-% air temperature in degrees Celsius
+-T_a = 18;
+-
+-% relative humidity in percent
+-RH = 90;
+-
+-% the salinity of the drop in ppt
+-S = 34;
+-
+-% ambient pressure in Pa
+-p0 = 100000;
+-
+-% initial drop radius in meters
+-r_0 = 100*1e-6; 
+-
+-maxIt = 1000;
+-maxEr_s = S/1000*0.1;
+-
+-% use Nayar functions?
+-global Nayar_flag
+-Nayar_flag = true;
+-
+-%% ------------------------- Begin -------------------------
+-
+-
+-% ----------------------------- setup paths --------------------------
+-[pathstr,name,ext] = fileparts(mfilename('fullpath')) ;
+-added_path_flag = 0;
+-path_to_fxns = which('rho_s.m');
+-if isempty(path_to_fxns)
+-    fprintf('Using files in %s\n',path_to_fxns(1:end-7))
+-    d = dir(pathstr);
+-    for ii = 1:length(d)
+-        % do not include hidden directories
+-        if ~strcmp(d(ii).name(1),'.') && d(ii).isdir
+-            addpath(sprintf('%s/%s',pathstr,d(ii).name))
+-        end
+-    end
+-    addpath(pathstr)
+-    added_path_flag = 1;
+-end
+-
+-
+-helpingAnonFxns;
+-
+-
+-
+-% --------------------- -----------------------------
+-% create some variables with the same information, but with different units
+-% than the input parameters
+-
+-T_s_Kelvin = Celsius2Kelvin(T_s); % T_s in Kelvin
+-T_a_Kelvin = Celsius2Kelvin(T_a); % T_a in Kelvin
+-P_mb = Pa2mb(p0);% p0 in mb
+-s = S/1000; % salinity in ppm
+-
+-[m_s] = compute_initial_drop_conditions(T_s,S,r_0,p0);
+-[m_w, s] = compute_m_w(T_s,r_0,m_s,p0,maxEr_s,maxIt);
+-%----------------------
+-% --- Sea Water -------
+-%----------------------
+-
+-% density of water at T_s and T_a
+-units='kg m^-3';
+-rho_s_T(1) = rho_s(T_s,r_0,m_s,s,p0);
+-rho_s_T(2) = rho_s(T_a,r_0,m_s,s,p0);
+-fprintf('rho_s = %15.7f +/- %10.7f [%s]\n',mean(rho_s_T),std(rho_s_T),units)
+-
+-% specific heat of water at T_s and T_a 
+-units='J kg^-1 K^-1';
+-c_ps_T(1) =  c_ps(T_s,S,p0);
+-c_ps_T(2) =  c_ps(T_a,S,p0);
+-fprintf('c_ps  = % 15.7f +/- %10.7f [%s]\n',mean(c_ps_T),std(c_ps_T),units)
+-
+-% kinematic viscosity of water at T_s and T_a 
+-units='m^2 s^-1';
+-nu_s_T(1) =  SW_Kviscosity(T_s,'C',S,'ppt');
+-nu_s_T(2) =  SW_Kviscosity(T_a,'C',S,'ppt');
+-fprintf('nu_s  = % 15.7f +/- %10.7f [%s]\n',mean(nu_s_T),std(nu_s_T),units)
+-
+-% dynamic viscosity of water at T_s and T_a
+-units='kg m^-1 s^-1';
+-mu_s_T(1) =  nu_s_T(1)*rho_s_T(1);
+-mu_s_T(2) =  nu_s_T(2)*rho_s_T(2);
+-fprintf('mu_s  = % 15.7f +/- %10.7f [%s]\n',mean(mu_s_T),std(mu_s_T),units)
+-
+-% dynamic viscosity of water at T_s and T_a
+-units='N m^-1';
+-sigma_s_T(1) =  sigma_s(T_s,m_s,m_w);
+-sigma_s_T(2) =  sigma_s(T_a,m_s,m_w);
+-fprintf('%s     = % 15.7f +/- %10.7f [%s]\n',char(963),mean(sigma_s_T),std(sigma_s_T),units)
+-
+-% thermal diffusivity of water at T_s and T_a
+-units='m^2 s^-1';
+-kappa_s(1) =  SW_Diffusivity(T_s,'C',34,'ppm');
+-kappa_s(2) =  SW_Diffusivity(T_a,'C',34,'ppm');
+-fprintf('kappa = % 15.10f +/- %10.9g [%s]\n',mean(kappa_s),std(kappa_s),units)
+-
+-
+-%----------------------
+-% ------  Air ---------
+-%----------------------
+-
+-% density of air at T_s and T_a
+-units='kg m^-3';
+-rho_a_T(1) = rho_a(T_s_Kelvin,p0);
+-rho_a_T(2) = rho_a(T_a_Kelvin,p0);
+-fprintf('rho_a = % 15.7f +/- %10.7f [%s]\n',mean(rho_a_T),std(rho_a_T),units)
+-
+-% specific heat of water at T_s and T_a 
+-units='J kg^-1 K^-1';
+-c_pm_T(1) =  c_pm(T_s,p0,RH);
+-c_pm_T(2) =  c_pm(T_a,p0,RH);
+-fprintf('c_pm  = % 15.7f +/- %10.7f [%s]\n',mean(c_pm_T),std(c_pm_T),units)
+-
+-% kinematic viscosity of air at T_s and T_a
+-units='m^2 s^-1';
+-nu_a_T(1) =  nu_a(T_s);
+-nu_a_T(2) =  nu_a(T_a);
+-fprintf('nu_a  = % 15.7f +/- %10.7f [%s]\n',mean(nu_a_T),std(nu_a_T),units)
+-
+-% dynamic viscosity of air at T_s and T_a
+-units='kg m^-1 s^-1';
+-mu_a_T(1) =  nu_a(T_s)*rho_a_T(1);
+-mu_a_T(2) =  nu_a(T_a)*rho_a_T(2);
+-fprintf('mu_a  = % 15.7f +/- %10.7f [%s]\n',mean(mu_a_T),std(mu_a_T),units)
+-
+-
+-%% ----------------------------- remove user-added paths --------------------------
+-if added_path_flag
+-    rm_ASF_paths
+-end
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+diff --git a/sandbox/testPrint.m b/sandbox/testPrint.m
+deleted file mode 100644
+index a7a1cd5..0000000
+--- a/sandbox/testPrint.m
++++ /dev/null
+@@ -1 +0,0 @@
+-fprintf('string %s',jid);fprintf('number %d',jid)

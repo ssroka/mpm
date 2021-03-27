@@ -123,7 +123,8 @@ function cp = SW_SpcHeat(T,uT,S,uS,P,uP)
     end
 
     if ~isequal((S<0)+(S>180),zeros(size(S)))
-        warning('Salinity is out of range for specific heat function 0<S<180 g/kg');
+        % SGS edit warning('Salinity is out of range for specific heat function 0<S<180 g/kg');
+        fprintf('\nSalinity is out of range for specific heat function 0<S<180 g/kg\n');
     end
 
     Psat = SW_Psat(T,'C',S,'ppt')/1E6;

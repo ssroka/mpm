@@ -96,7 +96,8 @@ function sigma = SW_SurfaceTension(T,uT,S,uS)
     end
 
     if ~isequal((S<0)+(S>131),zeros(size(S)))
-        warning('Salinity is out of range for surface tension function 0<S<131 g/kg');
+	% SGS edit warning('Salinity is out of range for surface tension function 0<S<131 g/kg');
+        fprintf('\nSalinity is out of range for surface tension function 0<S<131 g/kg\n');
     end
 
     %% BEGIN

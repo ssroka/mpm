@@ -129,7 +129,8 @@ function  [d_rho_dS,  d_rho_dT] = SW_Density_Dt(T,uT,S,uS,P,uP)
     end
 
     if ~isequal((S<0)+(S>150),zeros(size(S)))
-        warning('Salinity is out of range for density function 0 < S < 150 g/kg');
+        % SGS edit warning('Salinity is out of range for density function 0 < S < 150 g/kg');
+        fprintf('\nSalinity is out of range for density function 0 < S < 150 g/kg\n');
     end
 
     Psat = SW_Psat(T,'C',S,'ppt')/1E6;

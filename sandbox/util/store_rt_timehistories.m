@@ -17,6 +17,7 @@ for im = 1:length(d_mat)
       load(sprintf('%s',d_mat{im}));
       whos
       ic.r_0
+      t_final
       timehistory(count) = mpm_sim(d_mat{im},r_t,T_s_t,time_vec,ic);
       count = count + 1;
 end

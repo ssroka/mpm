@@ -1,0 +1,412 @@
+diff --git a/.gitignore b/.gitignore
+index 334c6c7..25fce1d 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -5,5 +5,3 @@
+ *.pdf
+ *.png
+ *.fig
+-*.err
+-*.out
+diff --git a/clean_out_err.txt b/clean_out_err.txt
+deleted file mode 100755
+index d8c2cd7..0000000
+--- a/clean_out_err.txt
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#!/bin/bash
+-
+-
+-rm -f mpm_[0-9]*.err  mpm_[0-9]*.out
+-
+-
+-
+diff --git a/dropletEvolution_driver.txt b/dropletEvolution_driver.txt
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/mpm_laurnch.txt b/mpm_laurnch.txt
+deleted file mode 100755
+index 49c072e..0000000
+--- a/mpm_laurnch.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-#!/bin/bash
+-
+-
+-for inputFileNum in {41..44}
+-do
+-        sbatch mpm.slurm $inputFileNum
+-	sleep 2
+-done
+-
+-for inputFileNum in {50..54}
+-do
+-        sbatch mpm.slurm $inputFileNum
+-	sleep 2
+-done
+-
+-for inputFileNum in {60..64}
+-do
+-        sbatch mpm.slurm $inputFileNum
+-	sleep 2
+-done
+-
+-for inputFileNum in {70..74}
+-do
+-        sbatch mpm.slurm $inputFileNum
+-	sleep 2
+-done
+-
+-
+-
+-
+-
+-
+-
+diff --git a/sandbox/files_using_rho_s.txt b/sandbox/files_using_rho_s.txt
+deleted file mode 100644
+index 06be9d8..0000000
+--- a/sandbox/files_using_rho_s.txt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-X NayarFxns/SW_Density.m
+-X NayarFxns/SW_Density_Dt.m
+-X NayarFxns/SW_IsobExp.m
+-  Q_s/compute_tauf.m
+-  approximationEndpoints/compute_req.m
+-  approximationEndpoints/compute_tauT.m
+-  approximationEndpoints/compute_taur.m
+-  dropletAcceleration/integrate_acceleration.m
+-  dropletAcceleration/plot_Fig1_Andreas2004.m
+-  mm_integration/compute_drdt.m
+-  mm_integration/compute_dsdt.m
+-  mm_vars/SW_Density_ds.m
+-  mm_vars/rho_s.m
+-  mm_vars/y.m
+-  plotScripts/plot_Q_s.m
+-  study_indep_vars/study_indep_vars.m
+-  study_indep_vars/study_indep_vars_real_data.m
+-  util/compute_initial_drop_conditions.m
+-  util/compute_m_w.m
+-  util/syms_vars.m
+diff --git a/sandbox/files_w_ppm.txt b/sandbox/files_w_ppm.txt
+deleted file mode 100644
+index 4e9beaa..0000000
+--- a/sandbox/files_w_ppm.txt
++++ /dev/null
+@@ -1,43 +0,0 @@
+-X NayarFxns/SW_BPE.m
+-X NayarFxns/SW_ChemPot_s.m
+-X NayarFxns/SW_ChemPot_w.m
+-X NayarFxns/SW_Conductivity.m
+-X NayarFxns/SW_ConductivityP.m
+-X NayarFxns/SW_Density.m
+-X NayarFxns/SW_Density_Dt.m
+-X NayarFxns/SW_Diffusivity.m
+-0 NayarFxns/SW_Enthalpy.m
+-0 NayarFxns/SW_Entropy.m
+-0 NayarFxns/SW_FlowExergy.m
+-0 NayarFxns/SW_Gibbs.m
+-0 NayarFxns/SW_IntEnergy.m
+-0 NayarFxns/SW_IsobExp.m
+-0 NayarFxns/SW_IsothComp.m
+-0 NayarFxns/SW_Kviscosity.m
+-X NayarFxns/SW_LatentHeat.m
+-0 NayarFxns/SW_OsmCoeff.m
+-0 NayarFxns/SW_OsmPress.m
+-0 NayarFxns/SW_Prandtl.m
+-X NayarFxns/SW_Psat.m
+-0 NayarFxns/SW_SChemPot_s.m
+-X NayarFxns/SW_SpcHeat.m
+-X NayarFxns/SW_SurfaceTension.m
+-X NayarFxns/SW_SurfaceTension_Dt.m
+-X NayarFxns/SW_Viscosity.m
+-0 NayarFxns/SW_Volume.m
+-**   inputFiles/Exp2_in.m
+-**   mm_vars/L_v.m
+-X mm_vars/SW_Density_ds.m
+-**   mm_vars/c_ps.m
+-**   mm_vars/rho_w.m
+-**   mm_vars/y.m
+-**   study_indep_vars/study_indep_vars_real_data.m
+-**   util/compute_initial_drop_conditions.m
+-**   util/compute_m_w.m
+-**   mm_vars/y.m
+-**   mm_vars/rho_s.m
+-
+-
+-X - I checked this file, it was fine to leave it as is
+-0 - I didn't check this file because I think I never modified it
+-C - changed this files
+diff --git a/sandbox/files_w_ppt.txt b/sandbox/files_w_ppt.txt
+deleted file mode 100644
+index a03329c..0000000
+--- a/sandbox/files_w_ppt.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-X NayarFxns/SW_BPE.m
+-X NayarFxns/SW_ChemPot_s.m
+-X NayarFxns/SW_ChemPot_w.m
+-X NayarFxns/SW_Conductivity.m
+-X NayarFxns/SW_ConductivityP.m
+-X NayarFxns/SW_Density.m
+-X NayarFxns/SW_Density_Dt.m
+-X NayarFxns/SW_Diffusivity.m
+-0 NayarFxns/SW_Enthalpy.m
+-0 NayarFxns/SW_Entropy.m
+-0 NayarFxns/SW_FlowExergy.m
+-0 NayarFxns/SW_Gibbs.m
+-0 NayarFxns/SW_IntEnergy.m
+-0 NayarFxns/SW_IsobExp.m
+-0 NayarFxns/SW_IsothComp.m
+-0 NayarFxns/SW_Kviscosity.m
+-X NayarFxns/SW_LatentHeat.m
+-0 NayarFxns/SW_OsmCoeff.m
+-0 NayarFxns/SW_OsmPress.m
+-0 NayarFxns/SW_Prandtl.m
+-X NayarFxns/SW_Psat.m
+-0 NayarFxns/SW_SChemPot_s.m
+-X NayarFxns/SW_SpcHeat.m
+-X NayarFxns/SW_SurfaceTension.m
+-X NayarFxns/SW_SurfaceTension_Dt.m
+-X NayarFxns/SW_Viscosity.m
+-0 NayarFxns/SW_Volume.m
+-X mm_vars/SW_Density_ds.m
+-**  mm_vars/rho_s.m
+-**  mm_vars/sigma_s.m
+-**  util/compute_m_w.m
+-
+-
+-X - I checked this file, it was fine to leave it as is
+-0 - I didn't check this file because I think I never modified it
+diff --git a/sandbox/find_ppm_ppt.sh b/sandbox/find_ppm_ppt.sh
+deleted file mode 100755
+index adc5504..0000000
+--- a/sandbox/find_ppm_ppt.sh
++++ /dev/null
+@@ -1,15 +0,0 @@
+-!/bin/bash
+-
+-for d in */; do
+-	grep -il "ppm" $d*.m >> files_w_ppm.txt
+-	grep -il "ppt" $d*.m >> files_w_ppt.txt
+-done
+-
+-for d in */*/; do
+-	grep -il "ppm" $d*.m >> files_w_ppm.txt
+-	grep -il "ppt" $d*.m >> files_w_ppt.txt
+-done
+-
+-
+-
+-
+diff --git a/sandbox/logfile.txt b/sandbox/logfile.txt
+deleted file mode 100644
+index 9326ea2..0000000
+--- a/sandbox/logfile.txt
++++ /dev/null
+@@ -1,153 +0,0 @@
+--------------------------
+-Run Name: Exp2_1  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp2_1  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp1_14  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_14  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_14  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp3_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp3_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp3_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp3_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_3  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_3  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_4  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_5  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_5  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_6  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp2_2  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp2_2  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp2_2  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp2_2  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp1_12  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp1_12  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp10_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp10_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp10_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp10_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp10_1  
+-Nayar Functions: on
+--------------------------
+-Run Name: Test_MPM  
+-Nayar Functions: off
+--------------------------
+-Run Name: Exp30  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp30  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp30  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp40  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp43  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp41  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp42  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp44  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp51  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp50  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp53  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp52  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp54  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp61  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp60  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp63  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp64  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp62  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp70  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp71  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp72  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp74  
+-Nayar Functions: on
+--------------------------
+-Run Name: Exp73  
+-Nayar Functions: on
+diff --git a/sandbox/mm_integration/compute_dsdt.m b/sandbox/mm_integration/compute_dsdt.m
+index b26ff3b..6113e90 100644
+--- a/sandbox/mm_integration/compute_dsdt.m
++++ b/sandbox/mm_integration/compute_dsdt.m
+@@ -1,3 +1,4 @@
++
+ function [dsdt] = compute_dsdt(t,stateVec,RH,m_s,T_a,P_mb,t_final,R,M_w,maxEr_s,maxIt)
+ helpingAnonFxns;
+ P_Pa = mb2Pa(P_mb);
+@@ -66,4 +67,4 @@ dTdt = 3./(rho_s(T_s,r,m_s,s,P_Pa)*c_ps(T_s,s*1000,P_Pa)*r^2)*(k_a_prime(T_s,P_m
+ %    		  		dsdt
+ % -------------------------------------------------------------------
+ 
+-dsdt = [drdt;dTdt];
++dsdt = [drdt;dTdt];
+\ No newline at end of file
+diff --git a/sandbox/mm_integration/progress_fxn.m b/sandbox/mm_integration/progress_fxn.m
+index 0e010c1..05f0fde 100644
+--- a/sandbox/mm_integration/progress_fxn.m
++++ b/sandbox/mm_integration/progress_fxn.m
+@@ -1,12 +1,27 @@
+ % prograss function
+ 
++
+ function [] = progress_fxn(status)
+-if status > 0.25 && status < 0.255
++
++if status > 0.25
++    load currentStatus.mat
++    if currentStatus == 0 && status > 0.25 && status < 0.75
+         fprintf('\n25 %% of integration complete\n')
+-elseif status > 0.5 && status < 0.505
++        currentStatus = 25;
++        save('currentStatus.mat','currentStatus')
++    elseif currentStatus == 25 && status > 0.50
+         fprintf('50 %% of integration complete\n')
+-elseif status > 0.75 && status < 0.755
++        currentStatus = 50;
++        save('currentStatus.mat','currentStatus')
++    elseif currentStatus == 50 && status > 0.75
+         fprintf('75 %% of integration complete\n')
++        currentStatus = 75;
++        save('currentStatus.mat','currentStatus')
++    elseif currentStatus == 75 && status > 0.9
++        currentStatus = 0;
++        save('currentStatus.mat','currentStatus')
++    end
++    
+ end
+ 
+ 
