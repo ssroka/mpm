@@ -14,7 +14,7 @@ DT_list = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]
 Ts_list = [27.0, 28.0, 29.0]
 
 #for i_RH in range(len(RH_list)):	
-for i_RH in [2, 3]:	
+for i_RH in [0,1]:	
 	for i_DT in range(len(DT_list)):	
 		for i_Ts in range(len(Ts_list)):	
 			#exp_num = 100*(2+i_Ts) + 10*(i_DT) + 1*(1+i_RH)

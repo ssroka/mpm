@@ -54,13 +54,34 @@ for r_0_ind = 1:length(r_0_vec)
     
     storeICs;
     
-    compute_Teq;
+    try
+        compute_Teq;
+    catch
+	disp('**** Was not able to calculate Teq ****')
+        print_comp = true;
+    end
+
     
+    try
     compute_req;
+    catch
+	    disp('**** Was not able to calculate req ****')
+    print_comp = true;
+    end
     
+    try
     compute_tauT;
+    catch
+	    disp('**** Was not able to calculate tauT ****')
+    print_comp = true;
+    end
     
+    try
     compute_taur;
+    catch
+	    disp('**** Was not able to calcuate taur ****')
+    print_comp = true;
+    end
     
     integrate_r_T;
     
